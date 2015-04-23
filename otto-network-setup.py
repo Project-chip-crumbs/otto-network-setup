@@ -54,9 +54,9 @@ def wifi_update_thread():
 
 @route('/')
 def rootHome():
-    return redirect('/index.html')
+    return redirect('/setup')
 
-@route('/<filename:re:.*\.html>')
+@route('/<filename:re:.*>')
 def html_file(filename):
     return static_file(filename, root=rootPath)
 
@@ -77,12 +77,13 @@ def testJsonPost():
     print "POST Header : \n %s" % dict(request.headers) #for debug header
     data = request.json
     print "data : %s" % data 
+    time.sleep(1)
     if data == None:
-        return json.dumps({'result':"Failed!"})
+        return "Connecting failed. please try again..."
     else:
-        return json.dumps({'result':"Connecting to network "+data['network']})
+        return "Connected to "+data['network']
 
 #wifis=get_wifi_networks()
 thread = Thread(target=wifi_update_thread)
 thread.start()
-run(host='192.168.1.105', port=8080, reloader=True)
+run(host='192.168.1.179', port=80, reloader=True)
