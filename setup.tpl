@@ -51,11 +51,13 @@
   <script src="jquery-1.11.2.min.js"></script>
   <script src="bootstrap/js/bootstrap.min.js"></script>
   <script language="javascript" type="text/javascript">
+  var connecting=false;
   jQuery(function() {
 
     $("#form").submit( function(event) {
       $('#result').html("connecting...");
-      var json_data={ network: $('#network').val(), password: $('#password').val() };
+      connecting=true;
+      var json_data={ network: $('#network option:selected').text(), password: $('#password').val(), id: $('#network').val() };
       $.ajax({
         type: 'POST',
         url: '/api/v1/setup',
@@ -63,7 +65,13 @@
         contentType: "application/json; charset=utf-8",
         success: function(data) {
           $('#result').html(data);
-        }
+          connecting=false;
+        },
+        error: function(XMLHttpRequest,textStatus,errorThrown) {
+          $('#result').html("An error occured. Please try again.");
+          connecting=false;
+        },
+
       });
       event.preventDefault();
       event.unbind();
@@ -75,26 +83,28 @@
   update_fun=function() {
     //DBG: $('#counter').html(++count);
 
+    if(!connecting) {
     $.ajax({
       dataType: 'json',
       url: '/wifis',
       success: function(json) {
-      console.log('got data:'+json);
+        console.log('got data:'+json);
         var selected = $("#network").val();
-        $.each( json, function(i,w) {
-          if(i==0) $("#network").html("");
-          $("<option>").attr("value",w).text(w).appendTo("#network");
-          if(w==selected) {
-            $("#network").val(w);
+        $("#network").html("");
+        $.each( json, function(k,w) {
+          console.log(w)
+          $("<option>").attr("value",w.id).text(w.name).appendTo("#network");
+          if(w.id==selected) {
+            $("#network").val(w.id);
           }
         });
       },
     });
-    
-    setTimeout(update_fun, 3000);
+    }    
+    setTimeout(update_fun, 10000);
   };
 
-  setTimeout(update_fun, 1000);
+  setTimeout(update_fun, 500);
 </script>
 </head>
 
