@@ -1,9 +1,10 @@
 #!/usr/bin/python
 
 import subprocess
+import bottle
 from bottle import route, static_file, debug, run, get, redirect
 from bottle import post, request, template, response
-import os, inspect, json, time
+import os, inspect, json, time, sys
 
 from threading import Thread, Lock
 
@@ -13,7 +14,6 @@ debug(True)
 # WebApp route path
 # get directory of WebApp (bottleJQuery.py's dir)
 rootPath = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-
 
 wifis = []
 wifis_mutex = Lock()
@@ -59,16 +59,18 @@ def rootHome():
 
 @route('/<filename:re:.*>')
 def html_file(filename):
+    print 'root=%s' % rootPath
     return static_file(filename, root=rootPath)
 
 @route('/setup')
 def setup():
+    print '/setup root=%s' % rootPath
     wifis_mutex.acquire()
-    r=template('setup', wifis=wifis)
+    r=template('setup', wifis=wifis, root=rootPath)
     wifis_mutex.release()
     return r
 
-@route('/wifis')
+@route('/api/v1/wifis')
 def setup():
     response.content_type = 'application/json'
     return json.dumps(wifis)
@@ -84,7 +86,7 @@ def testJsonPost():
         try:
           print "Writing connman configuration...",
           f=open("/var/lib/connman/wifi.config","w")
-          f.write('['+data['network']+']\n')
+          f.write('[service_'+data['id']+']\n')
           f.write('Type = wifi\n')
           f.write('Name = '+data['network']+'\n')
           if len(data['password']):
@@ -111,8 +113,17 @@ def testJsonPost():
         except:
           return "Connecting failed. please try again..."
 
-#wifis=get_wifi_networks()
-thread = Thread(target=wifi_update_thread)
-thread.start()
+if __name__ == "__main__":
+  if len(sys.argv)>1:
+    rootPath=sys.argv[1] 
 
-run(host='0.0.0.0', port=80, reloader=True)
+  print bottle.TEMPLATE_PATH
+  bottle.TEMPLATE_PATH.append(rootPath)
+  print bottle.TEMPLATE_PATH
+  print "using %s as root path" % rootPath
+
+  #wifis=get_wifi_networks()
+  thread = Thread(target=wifi_update_thread)
+  thread.start()
+  
+  run(host='0.0.0.0', port=80, reloader=True)

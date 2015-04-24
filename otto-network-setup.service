@@ -4,7 +4,7 @@ After=syslog.target auditd.service
 Wants=connman.service
 
 [Service]
-ExecStart=/usr/bin/otto-network-setup /usr/lib/otto-network-setup
+ExecStart=/usr/bin/otto-network-setup.py /usr/lib/otto-network-setup
 ExecStop=/bin/kill -SIGINT $MAINPID
 Restart=always
 

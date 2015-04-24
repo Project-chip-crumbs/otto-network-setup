@@ -86,7 +86,7 @@
     if(!connecting) {
     $.ajax({
       dataType: 'json',
-      url: '/wifis',
+      url: '/api/v1/wifis',
       success: function(json) {
         var selected = $("#network").val();
         var is_first=true;
