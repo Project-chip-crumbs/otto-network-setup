@@ -1,0 +1,12 @@
+[Unit]
+Description=OTTO network setup webserver
+After=syslog.target auditd.service
+Wants=connman.service
+
+[Service]
+ExecStart=/usr/bin/otto-network-setup /usr/lib/otto-network-setup
+ExecStop=/bin/kill -SIGINT $MAINPID
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
