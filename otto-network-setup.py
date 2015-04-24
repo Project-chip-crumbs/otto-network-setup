@@ -18,15 +18,16 @@ rootPath = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe(
 wifis = []
 wifis_mutex = Lock()
 
+debug_msg=False
+
 def get_wifi_networks(): 
     print "scanning networks...",
     p=subprocess.Popen(["/usr/bin/connmanctl","scan","wifi"],stdout=subprocess.PIPE)
-    print p.communicate()[0]
+    if debug_msg: print p.communicate()[0]
     
     print "getting devices...",
     p=subprocess.Popen(["/usr/bin/connmanctl","services"],stdout=subprocess.PIPE)
     output=p.communicate()[0]
-    
     print "done"
     
     networks = {}
@@ -36,14 +37,14 @@ def get_wifi_networks():
         wifi_type=wifi_id[wifi_id.rfind('_managed')+1:]
         if(len(wifi_name)):
             networks[wifi_name]={ 'id': wifi_id, 'type': wifi_type, 'name': wifi_name }
-            print networks[wifi_name]
+            if debug_msg: print networks[wifi_name]
     
     return networks
 
 def wifi_update_thread():
   while True:
     time.sleep(10)
-    print "** scanning networks **"
+    if debug_msg: print "** scanning networks **"
     tmp_wifis=get_wifi_networks()
     wifis_mutex.acquire()
     global wifis

@@ -88,11 +88,10 @@
       dataType: 'json',
       url: '/wifis',
       success: function(json) {
-        console.log('got data:'+json);
         var selected = $("#network").val();
-        $("#network").html("");
+        var is_first=true;
         $.each( json, function(k,w) {
-          console.log(w)
+          if(is_first) { $("#network").html(""); is_first=false; }
           $("<option>").attr("value",w.id).text(w.name).appendTo("#network");
           if(w.id==selected) {
             $("#network").val(w.id);
