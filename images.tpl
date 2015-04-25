@@ -1,3 +1,3 @@
 % for file in files:
-  <img src='/image/{{file}}' />
+  <a href='/image/{{file}}'><img src='/image/{{file}}' /></a>
 % end
