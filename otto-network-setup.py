@@ -55,7 +55,14 @@ def wifi_update_thread():
 
 @route('/')
 def rootHome():
-    return redirect('/setup')
+    dirs = os.listdir( "/mnt/pictures" )
+    dirs.sort(reverse=True)
+    return template('images', files=dirs)
+#    return redirect('/setup')
+
+@route('/image/<name:re:gif_[0-9]{4}.gif>')
+def callback(name):
+    return static_file(name, root='/mnt/pictures')
 
 @route('/<filename:re:.*>')
 def html_file(filename):
