@@ -6,7 +6,7 @@ from bottle import route, static_file, debug, run, get, redirect
 from bottle import post, request, template, response
 import os, inspect, json, time, sys
 
-from threading import Thread, Lock
+from threading import Thread, RLock
 
 #enable bottle debug
 debug(True)
@@ -16,14 +16,15 @@ debug(True)
 rootPath = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
 wifis = []
-wifis_mutex = Lock()
+wifis_mutex = RLock()
 
-debug_msg=False
+def is_child():
+  return 'BOTTLE_CHILD' in os.environ
 
 def get_wifi_networks(): 
     print "scanning networks...",
     p=subprocess.Popen(["/usr/bin/connmanctl","scan","wifi"],stdout=subprocess.PIPE)
-    if debug_msg: print p.communicate()[0]
+    print p.communicate()[0]
     
     print "getting devices...",
     p=subprocess.Popen(["/usr/bin/connmanctl","services"],stdout=subprocess.PIPE)
@@ -37,19 +38,22 @@ def get_wifi_networks():
         wifi_type=wifi_id[wifi_id.rfind('_managed')+1:]
         if(len(wifi_name)):
             networks[wifi_name]={ 'id': wifi_id, 'type': wifi_type, 'name': wifi_name }
-            if debug_msg: print networks[wifi_name]
+            #if debug_msg: print networks[wifi_name]
     
     return networks
 
 def wifi_update_thread():
+  countxx=0
   while True:
-    time.sleep(10)
-    if debug_msg: print "** scanning networks **"
-    tmp_wifis=get_wifi_networks()
-    wifis_mutex.acquire()
     global wifis
-    wifis=tmp_wifis
-    wifis_mutex.release()
+    global wifis_mutex
+    if(wifis_mutex.acquire(blocking=0)):
+      wifis=get_wifi_networks()
+      wifis_mutex.release()
+      print "scan # %d completed"%countxx
+      countxx+=1
+    
+    time.sleep(5)
 ##    for w in wifis:
 ##      print w 
 
@@ -72,7 +76,7 @@ def html_file(filename):
 @route('/setup')
 def setup():
     print '/setup root=%s' % rootPath
-    wifis_mutex.acquire()
+    wifis_mutex.acquire(blocking=1)
     r=template('setup', wifis=wifis, root=rootPath)
     wifis_mutex.release()
     return r
@@ -83,14 +87,16 @@ def setup():
     return json.dumps(wifis)
 
 @post('/api/v1/setup')
-def testJsonPost():
+def jsonPost():
+    global wifis_mutex
     print "POST Header : \n %s" % dict(request.headers) #for debug header
     data = request.json
     print "data : %s" % data 
     if data == None:
-        return "Connecting failed. please try again..."
+        return "Invalid input data. please try again..."
     else:
         try:
+          wifis_mutex.acquire(blocking=1)
           print "Writing connman configuration...",
           f=open("/var/lib/connman/wifi.config","w")
           f.write('[service_'+data['id']+']\n')
@@ -101,24 +107,31 @@ def testJsonPost():
           f.close()
           print "DONE"
           print "connmanctl connect "+data['id']
-          p=subprocess.Popen(["/usr/bin/connmanctl","connect",data['id']],stdout=subprocess.PIPE)
-          out=p.communicate()[0]
-
-          if out.startswith('Connected') or out.rstrip().find('Already connected')!=-1:
-            p=subprocess.Popen(["/sbin/ifconfig","wlan0"],stdout=subprocess.PIPE)
-            out=p.communicate()[0]
+          p=subprocess.Popen(["/usr/bin/connmanctl","connect",data['id']],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+          (out,err)=p.communicate()
+          already_connected = ('Already connected' in err)
+ 
+          if out.startswith('Connected') or already_connected:
+            p=subprocess.Popen(["/sbin/ifconfig","wlan0"],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            (out,err)=p.communicate()
             pos=out.find("inet addr:")
             ip='?.?.?.?'
             if(pos>=0):
               ip=out[pos+10:].split(' ')[0]
-  
-            print "Connected to "+data['network']+', IP: '+ip
-            return "Connected to "+data['network']+', IP: '+ip
+
+            if already_connected:
+              r="Already connected to "+data['network']+', IP: '+ip
+            else:  
+              r="Connected to "+data['network']+', IP: '+ip
           else:
-            print "Error, could not connect to "+data['network']+" - please try again!"
-            return "Error, could not connect to "+data['network']+" - please try again!"
+            print "out=%s\nerr=%s\n" %(out,err)
+            r="Error, could not connect to "+data['network']+" - please try again!"
         except:
-          return "Connecting failed. please try again..."
+          r="Connecting failed. please try again..."
+        finally:
+          wifis_mutex.release()
+          print r
+          return r
 
 if __name__ == "__main__":
   if len(sys.argv)>1:
@@ -129,8 +142,9 @@ if __name__ == "__main__":
   print bottle.TEMPLATE_PATH
   print "using %s as root path" % rootPath
 
-  #wifis=get_wifi_networks()
-  thread = Thread(target=wifi_update_thread)
-  thread.start()
+  #only start thread in child process
+  if is_child():
+    thread = Thread(target=wifi_update_thread)
+    thread.start()
   
   run(host='0.0.0.0', port=80, reloader=True)

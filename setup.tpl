@@ -63,6 +63,7 @@
         url: '/api/v1/setup',
         data: JSON.stringify(json_data),
         contentType: "application/json; charset=utf-8",
+        timeout: 20000,
         success: function(data) {
           $('#result').html(data);
           connecting=false;
@@ -74,8 +75,8 @@
 
       });
       event.preventDefault();
-      event.unbind();
-      });
+      //event.unbind();
+    });
 
   });
   var count = 0;
@@ -100,7 +101,7 @@
       },
     });
     }    
-    setTimeout(update_fun, 10000);
+    setTimeout(update_fun, 6000);
   };
 
   setTimeout(update_fun, 500);
