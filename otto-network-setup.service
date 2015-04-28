@@ -1,6 +1,6 @@
 [Unit]
 Description=OTTO network setup webserver
-After=syslog.target auditd.service network.service connman.service
+After=network.target connman.service
 
 [Service]
 ExecStart=/usr/bin/otto-network-setup.py /usr/lib/otto-network-setup
