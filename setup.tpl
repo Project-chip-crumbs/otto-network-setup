@@ -39,6 +39,7 @@
     </div>
 
     <button type="submit" id="connect" class="btn btn-default">Connect</button>
+    <button type="button" id="scan" class="btn btn-default">Scan networks</button>
 
     <p id="result">
     </p>
@@ -78,33 +79,36 @@
       //event.unbind();
     });
 
-  });
-  var count = 0;
 
-  update_fun=function() {
-    //DBG: $('#counter').html(++count);
+    function get_wifis() {
+        console.log("scan button pressed");
+        $.ajax({
+          dataType: 'json',
+          url: '/api/v1/wifis',
+          success: function(json) {
+            console.log("*SUCCESS:"+json);
+            var selected = $("#network").val();
+            var is_first=true;
+            $.each( json, function(k,w) {
+              console.log("adding "+k);
+              if(is_first) { $("#network").html(""); is_first=false; }
+              $("<option>").attr("value",w.id).text(w.name).appendTo("#network");
+              if(w.id==selected) {
+                $("#network").val(w.id);
+              }
+            });
+          },
+          error: function(XMLHttpRequest,textStatus,errorThrown) {
+          $('#result').html("## An error occured. Please try again.");
+        },
 
-    if(!connecting) {
-    $.ajax({
-      dataType: 'json',
-      url: '/api/v1/wifis',
-      success: function(json) {
-        var selected = $("#network").val();
-        var is_first=true;
-        $.each( json, function(k,w) {
-          if(is_first) { $("#network").html(""); is_first=false; }
-          $("<option>").attr("value",w.id).text(w.name).appendTo("#network");
-          if(w.id==selected) {
-            $("#network").val(w.id);
-          }
         });
-      },
-    });
-    }    
-    setTimeout(update_fun, 6000);
-  };
+    }
+    $("#scan").click( get_wifis );
 
-  setTimeout(update_fun, 500);
+    setTimeout( get_wifis, 2000 );
+  });
+
 </script>
 </head>
 

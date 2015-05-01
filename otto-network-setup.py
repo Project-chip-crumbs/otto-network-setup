@@ -31,6 +31,7 @@ def get_wifi_networks():
     output=p.communicate()[0]
     print "done"
     
+    print "-"*50
     networks = {}
     for line in output.split('\n'):
         wifi_id=line[line.rfind(' ')+1:]
@@ -38,8 +39,10 @@ def get_wifi_networks():
         wifi_type=wifi_id[wifi_id.rfind('_managed')+1:]
         if(len(wifi_name)):
             networks[wifi_name]={ 'id': wifi_id, 'type': wifi_type, 'name': wifi_name }
-            #if debug_msg: print networks[wifi_name]
-    
+            print networks[wifi_name]
+    print "-"*50
+    print networks    
+    print "-"*50
     return networks
 
 def wifi_update_thread():
@@ -84,6 +87,7 @@ def setup():
 @route('/api/v1/wifis')
 def setup():
     response.content_type = 'application/json'
+    wifis=get_wifi_networks()
     return json.dumps(wifis)
 
 @post('/api/v1/setup')
@@ -143,8 +147,8 @@ if __name__ == "__main__":
   print "using %s as root path" % rootPath
 
   #only start thread in child process
-  if is_child():
-    thread = Thread(target=wifi_update_thread)
-    thread.start()
+  #if is_child():
+  #  thread = Thread(target=wifi_update_thread)
+  #  thread.start()
   
   run(host='0.0.0.0', port=80, reloader=True)

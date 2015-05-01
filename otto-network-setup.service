@@ -1,6 +1,6 @@
 [Unit]
 Description=OTTO network setup webserver
-After=network.target connman.service
+After=network.target connman.service dnsmasq.service otto-wifi.service
 
 [Service]
 ExecStart=/usr/bin/otto-network-setup.py /usr/lib/otto-network-setup
