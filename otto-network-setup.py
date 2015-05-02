@@ -13,10 +13,13 @@ debug(True)
 
 # WebApp route path
 # get directory of WebApp (bottleJQuery.py's dir)
-rootPath = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+rootPath =os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
 wifis = []
 wifis_mutex = RLock()
+
+IMAGEPATH = "/mnt/pictures"
+IMAGEURLPREFIX="/image/"
 
 def is_child():
   return 'BOTTLE_CHILD' in os.environ
@@ -62,14 +65,15 @@ def wifi_update_thread():
 
 @route('/')
 def rootHome():
-    dirs = os.listdir( "/mnt/pictures" )
+    dirs = os.listdir( IMAGEPATH  )
     dirs.sort(reverse=True)
+    dirs=[ IMAGEURLPREFIX + d for d in dirs ] 
     return template('images', files=dirs)
 #    return redirect('/setup')
 
-@route('/image/<name:re:gif_[0-9]{4}.gif>')
+@route(IMAGEURLPREFIX+'<name:re:gif_[0-9]{4}.gif>')
 def callback(name):
-    return static_file(name, root='/mnt/pictures')
+    return static_file(name, root=IMAGEPATH)
 
 @route('/<filename:re:.*>')
 def html_file(filename):
