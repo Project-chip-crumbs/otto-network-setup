@@ -65,10 +65,17 @@ def wifi_update_thread():
 
 @route('/')
 def rootHome():
+  if os.path.isdir(IMAGEPATH):
     dirs = os.listdir( IMAGEPATH  )
     dirs.sort(reverse=True)
     dirs=[ IMAGEURLPREFIX + d for d in dirs ] 
-    return template('images', files=dirs)
+  else:
+    dirs = []
+    for i in range(0,10):
+      dirs.append('https://placekitten.com/g/200/300')
+
+  return template('images', files=dirs)
+      
 #    return redirect('/setup')
 
 @route(IMAGEURLPREFIX+'<name:re:gif_[0-9]{4}.gif>')
