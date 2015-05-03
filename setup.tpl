@@ -16,7 +16,7 @@
     <div class="container" style="text-align:right; position:absolute; top:15px; right:5px;">
       <a href="/" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-picture">      </div></a>
       <div style="margin-left:10px; font-size:14pt;" class="glyphicon glyphicon-cog">          </div>
-      <a href="http://nextthing.co/otto.html" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-question-sign"></div></a>
+      <a href="http://bbs.nextthing.co" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-question-sign"></div></a>
       </ul>
     </div>
      

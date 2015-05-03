@@ -90,7 +90,7 @@
     <div class="container" style="text-align:right; position:absolute; bottom:15px; right:5px;">
       <div style="margin-left:10px; font-size:14pt;" class="glyphicon glyphicon-picture">          </div>
       <a href="/setup" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-cog">      </div></a>
-      <a href="http://nextthing.co/otto.html" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-question-sign"></div></a>
+      <a href="http://bbs.nextthing.co" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-question-sign"></div></a>
       </ul>
     </div>
  
