@@ -1,5 +1,9 @@
 <html>
   <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
   
   <!-- Core CSS file -->
   <link rel="stylesheet" href="PhotoSwipe/photoswipe.css"> 
@@ -83,6 +87,13 @@
 
     </div>
 
+    <div class="container" style="text-align:right; position:absolute; bottom:15px; right:5px;">
+      <div style="margin-left:10px; font-size:14pt;" class="glyphicon glyphicon-picture">          </div>
+      <a href="/setup" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-cog">      </div></a>
+      <a href="http://nextthing.co/otto.html" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-question-sign"></div></a>
+      </ul>
+    </div>
+ 
 </div>
 
   <script>

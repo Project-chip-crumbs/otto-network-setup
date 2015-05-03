@@ -10,10 +10,21 @@
 
 <body>
   <div class="container">
-    <h1>Otto Wifi Setup</h1>
+
+   
+
+    <div class="container" style="text-align:right; position:absolute; top:15px; right:5px;">
+      <a href="/" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-picture">      </div></a>
+      <div style="margin-left:10px; font-size:14pt;" class="glyphicon glyphicon-cog">          </div>
+      <a href="http://nextthing.co/otto.html" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-question-sign"></div></a>
+      </ul>
+    </div>
+     
+
+    <h1>Wifi Setup</h1>
+
 
     <p>
-      Otto is currently in setup mode.
       Please select the name of the Wifi network you would like to use
       and enter the password.
     </p>
@@ -46,6 +57,7 @@
 
       <!-- DBG: Timer executed <span id="counter">0</span> times...
       <span id="wifis">scanning for networks...</span> -->
+
 
   </div>
 
