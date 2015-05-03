@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   
   <!-- Core CSS file -->
   <link rel="stylesheet" href="assets/PhotoSwipe/photoswipe.css"> 
@@ -40,7 +40,7 @@
     <!-- Background of PhotoSwipe. 
          It's a separate element as animating opacity is faster than rgba(). -->
     <div class="pswp__bg"></div>
-    <div class="otto-logo"> <img src="assets/otto-logo-black.svg"/> </div>
+    <div class="otto-logo"> <img src="/assets/otto-logo-black.svg"/> </div>
 
     <!-- Slides wrapper with overflow:hidden. -->
     <div class="pswp__scroll-wrap">
