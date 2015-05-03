@@ -6,19 +6,31 @@
   <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
   
   <!-- Core CSS file -->
-  <link rel="stylesheet" href="PhotoSwipe/photoswipe.css"> 
+  <link rel="stylesheet" href="assets/PhotoSwipe/photoswipe.css"> 
 
   <!-- Skin CSS file (styling of UI - buttons, caption, etc.)
   In the folder of skin CSS file there are also:
   - .png and .svg icons sprite, 
   - preloader.gif (for browsers that do not support CSS animations) -->
-  <link rel="stylesheet" href="PhotoSwipe/default-skin/default-skin.css"> 
+  <link rel="stylesheet" href="assets/PhotoSwipe/default-skin/default-skin.css"> 
 
   <!-- Core JS file -->
-  <script src="PhotoSwipe/photoswipe.min.js"></script> 
+  <script src="assets/PhotoSwipe/photoswipe.min.js"></script> 
 
   <!-- UI JS file -->
-  <script src="PhotoSwipe/photoswipe-ui-default.min.js"></script> 
+  <script src="assets/PhotoSwipe/photoswipe-ui-default.min.js"></script> 
+  <style type="text/css">
+  .otto-logo{
+    position: absolute;
+    width: 14%;
+    margin-left: 43%;
+    z-index: 100;
+  }
+  .otto-logo > img {
+    -webkit-filter: drop-shadow( 0px 0px 2px rgba( 255, 255, 255, 1.0 ) );
+            filter: drop-shadow( 0px 0px 2px rgba( 255, 255, 255, 1.0 ) );
+  }
+  </style>
   </head>
 
   <body>
@@ -28,6 +40,7 @@
     <!-- Background of PhotoSwipe. 
          It's a separate element as animating opacity is faster than rgba(). -->
     <div class="pswp__bg"></div>
+    <div class="otto-logo"> <img src="assets/otto-logo-black.svg"/> </div>
 
     <!-- Slides wrapper with overflow:hidden. -->
     <div class="pswp__scroll-wrap">
@@ -49,8 +62,6 @@
                 <!--  Controls are self-explanatory. Order can be changed. -->
 
                 <div class="pswp__counter"></div>
-
-                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 
                 <button class="pswp__button pswp__button--share" title="Share"></button>
 
@@ -110,7 +121,17 @@
     var options = {
         // optionName: 'option value'
         // for example:
-        index: 0 // start at first slide
+        escKey: false,
+        pinchToClose: false,
+        closeOnScroll: false,
+        closeOnVerticalDrag: false,
+        closeEl: false,
+        tapToClose: false,
+        modal: false,
+        clickToCloseNonZoomable: false,
+        indexIndicatorSep: " of ",
+        index: 0, // start at first slide
+        closeElClasses: [],
     };
     
     // Initializes and opens PhotoSwipe
