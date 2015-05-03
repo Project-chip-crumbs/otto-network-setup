@@ -85,10 +85,22 @@ def rootHome():
 def callback(name):
     return static_file(name, root=IMAGEPATH)
 
-@route('/<filename:re:.*>')
-def html_file(filename):
-    print 'root=%s' % rootPath
-    return static_file(filename, root=rootPath)
+@route('/assets/<filename:re:.*svg>')
+def static_svg(filename):
+    return static_file(filename, mimetype='image/svg+xml', root=rootPath + '/assets/' )
+
+@route('/assets/<filename:re:.*woff2>')
+def static_svg(filename):
+    return static_file(filename, mimetype='application/font-woff2', root=rootPath + '/assets/' )
+
+@route('/assets/<filename:re:.*>')
+def static_assets(filename):
+    return static_file(filename, root=rootPath + '/assets/' )
+ 
+#@route('/<filename:re:.*>')
+#def html_file(filename):
+#    print 'root=%s' % rootPath
+#    return static_file(filename, root=rootPath + '/assets/' )
 
 @route('/setup')
 def setup():
@@ -156,7 +168,7 @@ if __name__ == "__main__":
     rootPath=sys.argv[1] 
 
   print bottle.TEMPLATE_PATH
-  bottle.TEMPLATE_PATH.append(rootPath)
+  bottle.TEMPLATE_PATH.append(rootPath + "/views")
   print bottle.TEMPLATE_PATH
   print "using %s as root path" % rootPath
 

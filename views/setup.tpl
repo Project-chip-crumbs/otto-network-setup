@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <title>Otto WifiSetup</title>
 </head>
 
@@ -16,7 +16,7 @@
     <div class="container" style="text-align:right; position:absolute; top:15px; right:5px;">
       <a href="/" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-picture">      </div></a>
       <div style="margin-left:10px; font-size:14pt;" class="glyphicon glyphicon-cog">          </div>
-      <a href="http://nextthing.co/otto.html" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-question-sign"></div></a>
+      <a href="http://bbs.nextthing.co" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-question-sign"></div></a>
       </ul>
     </div>
      
@@ -61,8 +61,8 @@
 
   </div>
 
-  <script src="jquery-1.11.2.min.js"></script>
-  <script src="bootstrap/js/bootstrap.min.js"></script>
+  <script src="assets/jquery-1.11.2.min.js"></script>
+  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
   <script language="javascript" type="text/javascript">
   var connecting=false;
   jQuery(function() {
