@@ -5,6 +5,7 @@ import bottle
 from bottle import route, static_file, debug, run, get, redirect
 from bottle import post, request, template, response
 import os, inspect, json, time, sys
+import random
 
 from threading import Thread, RLock
 
@@ -13,10 +14,13 @@ debug(True)
 
 # WebApp route path
 # get directory of WebApp (bottleJQuery.py's dir)
-rootPath = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+rootPath =os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
 wifis = []
 wifis_mutex = RLock()
+
+IMAGEPATH = "/mnt/pictures"
+IMAGEURLPREFIX="/image/"
 
 def is_child():
   return 'BOTTLE_CHILD' in os.environ
@@ -62,14 +66,24 @@ def wifi_update_thread():
 
 @route('/')
 def rootHome():
-    dirs = os.listdir( "/mnt/pictures" )
+  if os.path.isdir(IMAGEPATH):
+    dirs = os.listdir( IMAGEPATH  )
     dirs.sort(reverse=True)
-    return template('images', files=dirs)
+    dirs=[ IMAGEURLPREFIX + d for d in dirs ] 
+  else:
+    dirs = []
+    for i in range(0,10):
+      h=random.randint(20,48) * 10
+      w=int(4.0/3.0 * h)
+      dirs.append('https://placekitten.com/g/%d/%d'%(w,h))
+
+  return template('images', files=dirs)
+      
 #    return redirect('/setup')
 
-@route('/image/<name:re:gif_[0-9]{4}.gif>')
+@route(IMAGEURLPREFIX+'<name:re:gif_[0-9]{4}.gif>')
 def callback(name):
-    return static_file(name, root='/mnt/pictures')
+    return static_file(name, root=IMAGEPATH)
 
 @route('/<filename:re:.*>')
 def html_file(filename):

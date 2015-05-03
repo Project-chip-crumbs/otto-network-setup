@@ -1,0 +1,16 @@
+<html>
+  <head>
+  </head>
+
+  <body>
+    <ul>
+% for file in files:
+      <li data-preview="{{file}}"><a href='#'><img src='/image/{{file}}' /></a></li>
+% end
+    </ul>
+  </div>
+  </div>
+
+  </body>
+
+</html>
