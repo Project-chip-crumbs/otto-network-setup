@@ -92,7 +92,6 @@
     var items = [
 % for file in files:
         { src: '{{file}}', w: 640, h: 480 },
-        { src: '{{file}}', w: 640, h: 480 },
 % end
     ];
     

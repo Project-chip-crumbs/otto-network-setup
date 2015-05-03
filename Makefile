@@ -1,9 +1,11 @@
-SERVER=root@192.168.1.188
+SERVER=root@192.168.1.135
 
 all: setup.tpl otto-network-setup.py
 #	scp setup.tpl otto-network-setup.py cam0:/mnt/otto-network-setup/
 	scp setup.tpl $(SERVER):/usr/lib/otto-network-setup/
 	scp images.tpl $(SERVER):/usr/lib/otto-network-setup/
+	scp -r PhotoSwipe $(SERVER):/usr/lib/otto-network-setup/PhotoSwipe
+	scp -r bootstrap $(SERVER):/usr/lib/otto-network-setup/bootstrap
 	scp otto-network-setup.py $(SERVER):/usr/bin
 #	scp otto-network-setup.service $(SERVER):/usr/lib/systemd/system/otto-network-setup.service
 #	ssh cam0 "/bin/rm -f /etc/systemd/system/multi-user.target.wants/otto-network-setup.service"

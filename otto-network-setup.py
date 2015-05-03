@@ -5,6 +5,7 @@ import bottle
 from bottle import route, static_file, debug, run, get, redirect
 from bottle import post, request, template, response
 import os, inspect, json, time, sys
+import random
 
 from threading import Thread, RLock
 
@@ -72,7 +73,9 @@ def rootHome():
   else:
     dirs = []
     for i in range(0,10):
-      dirs.append('https://placekitten.com/g/200/300')
+      h=random.randint(20,48) * 10
+      w=int(4.0/3.0 * h)
+      dirs.append('https://placekitten.com/g/%d/%d'%(w,h))
 
   return template('images', files=dirs)
       
