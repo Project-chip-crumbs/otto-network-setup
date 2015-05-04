@@ -26,10 +26,6 @@
     margin-left: 43%;
     z-index: 100;
   }
-  .otto-logo > img {
-    -webkit-filter: drop-shadow( 0px 0px 2px rgba( 255, 255, 255, 1.0 ) );
-            filter: drop-shadow( 0px 0px 2px rgba( 255, 255, 255, 1.0 ) );
-  }
   </style>
   </head>
 
@@ -40,7 +36,7 @@
     <!-- Background of PhotoSwipe. 
          It's a separate element as animating opacity is faster than rgba(). -->
     <div class="pswp__bg"></div>
-    <div class="otto-logo"> <img src="assets/otto-logo-black.svg"/> </div>
+    <div class="otto-logo"> <img src="assets/otto-logo-white.svg"/> </div>
 
     <!-- Slides wrapper with overflow:hidden. -->
     <div class="pswp__scroll-wrap">
