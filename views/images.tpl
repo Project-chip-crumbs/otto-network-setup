@@ -128,6 +128,9 @@
         indexIndicatorSep: " of ",
         index: 0, // start at first slide
         closeElClasses: [],
+        shareButtons: [
+          {id:'download', label:'Download image', url:'\{\{raw_image_url\}\}', download:true}
+        ]
     };
     
     // Initializes and opens PhotoSwipe
