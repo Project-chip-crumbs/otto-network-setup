@@ -112,6 +112,11 @@
         { src: '{{file}}', w: 640, h: 480 },
 % end
     ];
+
+    if( items.length<1 )
+    {
+      items = [ {src:'assets/otto-logo-white.svg', w:400, h:400 }, ];
+    }
     
     // define options (if needed)
     var options = {
