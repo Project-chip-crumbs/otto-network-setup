@@ -106,15 +106,21 @@ def static_assets(filename):
 def setup():
     print '/setup root=%s' % rootPath
     wifis_mutex.acquire(blocking=1)
-    r=template('setup', wifis=wifis, root=rootPath)
+    r=template('setup', wifis=wifis)
     wifis_mutex.release()
     return r
 
 @route('/api/v1/wifis')
-def setup():
+def getwifis():
     response.content_type = 'application/json'
     wifis=get_wifi_networks()
     return json.dumps(wifis)
+
+@route('/api/v1/delete/<filename:re:gif_[0-9]{4}.gif>')
+def deleteImage(filename=None):
+    os.unlink(os.path.join(IMAGEPATH,filename)); 
+    response.content_type = 'application/json'
+    return json.dumps(filename)
 
 @post('/api/v1/setup')
 def jsonPost():

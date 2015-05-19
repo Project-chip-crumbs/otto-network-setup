@@ -27,6 +27,8 @@
     z-index: 100;
   }
   </style>
+
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
   </head>
 
   <body>
@@ -95,14 +97,52 @@
     </div>
 
     <div class="container" style="text-align:right; position:absolute; bottom:15px; right:5px;">
+      <a  id="delete" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-trash">      </div></a>
       <div style="margin-left:10px; font-size:14pt;" class="glyphicon glyphicon-picture">          </div>
       <a href="/setup" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-cog">      </div></a>
       <a href="http://bbs.nextthing.co" style="margin-left:10px; font-size:14pt;"><div class="glyphicon glyphicon-question-sign"></div></a>
       </ul>
     </div>
  
+    <div class="modal fade" id="reallyDelete">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Delete current image</h4>
+          </div>
+          <div class="modal-body">
+            <p>Do you really want to delete <span id="filename"></span>?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="delete2">Delete</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="modal fade" id="errorDelete">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Error</h4>
+          </div>
+          <div class="modal-body">
+            <p>Could not delete <span id="filename2"></span>.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 </div>
 
+  <script src="assets/jquery-1.11.2.min.js"></script>
+  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
   <script>
     pswpElement = document.querySelectorAll('.pswp')[0];
 
@@ -141,7 +181,38 @@
     // Initializes and opens PhotoSwipe
     var gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
     gallery.init();
+
+    $('#delete').click( function() {
+        $('#filename').html(gallery.currItem.src);
+        $('#reallyDelete').modal('show');
+    });
+
+    $("#delete2").click( function() {
+        $('#reallyDelete').modal('hide');
+
+        var idx = gallery.currItem.src.lastIndexOf('/');
+        if(idx != -1) {
+          var fn = gallery.currItem.src.substring(idx + 1);
+        }
+
+        $.ajax({
+          dataType: 'json',
+          url: '/api/v1/delete/'+fn,
+          success: function(json) {
+            console.log("successfully deleted: "+json);
+            gallery.items.splice(gallery.getCurrentIndex(),1);
+            gallery.invalidateCurrItems();
+            gallery.updateSize(true);
+          },
+          error: function(XMLHttpRequest,textStatus,errorThrown) {
+          $('#filename2').html(gallery.currItem.src);
+          $('#errorDelete').modal("show");
+          }
+        });
+   });
+
+
   </script>
-  </body>
+</body>
 
 </html>
