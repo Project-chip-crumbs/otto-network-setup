@@ -14,27 +14,28 @@ debug(True)
 
 # WebApp route path
 # get directory of WebApp (bottleJQuery.py's dir)
-rootPath =os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+rootPath = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
 wifis = []
 wifis_mutex = RLock()
 
-IMAGEPATH = "/mnt/pictures"
-IMAGEURLPREFIX="/image/"
+IMAGEPATH = '/mnt/pictures'
+IMAGEURLPREFIX = '/image/'
+image_regex = '\\w+_[0-9]+\\.((gif)|(jpg))'
 
 def is_child():
   return 'BOTTLE_CHILD' in os.environ
 
-def get_wifi_networks(): 
+def get_wifi_networks():
     print "scanning networks...",
     p=subprocess.Popen(["/usr/bin/connmanctl","scan","wifi"],stdout=subprocess.PIPE)
     print p.communicate()[0]
-    
+
     print "getting devices...",
     p=subprocess.Popen(["/usr/bin/connmanctl","services"],stdout=subprocess.PIPE)
     output=p.communicate()[0]
     print "done"
-    
+
     print "-"*50
     networks = {}
     for line in output.split('\n'):
@@ -45,7 +46,7 @@ def get_wifi_networks():
             networks[wifi_name]={ 'id': wifi_id, 'type': wifi_type, 'name': wifi_name }
             print networks[wifi_name]
     print "-"*50
-    print networks    
+    print networks
     print "-"*50
     return networks
 
@@ -59,17 +60,17 @@ def wifi_update_thread():
       wifis_mutex.release()
       print "scan # %d completed"%countxx
       countxx+=1
-    
+
     time.sleep(5)
 ##    for w in wifis:
-##      print w 
+##      print w
 
 @route('/')
 def rootHome():
   if os.path.isdir(IMAGEPATH):
     dirs = os.listdir( IMAGEPATH  )
     dirs.sort(reverse=True)
-    dirs=[ IMAGEURLPREFIX + d for d in dirs ] 
+    dirs=[ IMAGEURLPREFIX + d for d in dirs ]
   else:
     dirs = []
     for i in range(0,10):
@@ -78,10 +79,10 @@ def rootHome():
       dirs.append('https://placekitten.com/g/%d/%d'%(w,h))
 
   return template('images', files=dirs)
-      
+
 #    return redirect('/setup')
 
-@route(IMAGEURLPREFIX+'<name:re:gif_[0-9]{4}.gif>')
+@route('{}<name:re:{}>'.format(IMAGEURLPREFIX, image_regex))
 def callback(name):
     return static_file(name, root=IMAGEPATH)
 
@@ -96,7 +97,7 @@ def static_svg(filename):
 @route('/assets/<filename:re:.*>')
 def static_assets(filename):
     return static_file(filename, root=rootPath + '/assets/' )
- 
+
 #@route('/<filename:re:.*>')
 #def html_file(filename):
 #    print 'root=%s' % rootPath
@@ -116,9 +117,9 @@ def getwifis():
     wifis=get_wifi_networks()
     return json.dumps(wifis)
 
-@route('/api/v1/delete/<filename:re:gif_[0-9]{4}.gif>')
+@route('/api/v1/delete/<filename:re:{}>'.format(image_regex))
 def deleteImage(filename=None):
-    os.unlink(os.path.join(IMAGEPATH,filename)); 
+    os.unlink(os.path.join(IMAGEPATH,filename));
     response.content_type = 'application/json'
     return json.dumps(filename)
 
@@ -127,7 +128,7 @@ def jsonPost():
     global wifis_mutex
     print "POST Header : \n %s" % dict(request.headers) #for debug header
     data = request.json
-    print "data : %s" % data 
+    print "data : %s" % data
     if data == None:
         return "Invalid input data. please try again..."
     else:
@@ -146,7 +147,7 @@ def jsonPost():
           p=subprocess.Popen(["/usr/bin/connmanctl","connect",data['id']],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
           (out,err)=p.communicate()
           already_connected = ('Already connected' in err)
- 
+
           if out.startswith('Connected') or already_connected:
             p=subprocess.Popen(["/sbin/ifconfig","wlan0"],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             (out,err)=p.communicate()
@@ -157,7 +158,7 @@ def jsonPost():
 
             if already_connected:
               r="Already connected to "+data['network']+', IP: '+ip
-            else:  
+            else:
               r="Connected to "+data['network']+', IP: '+ip
           else:
             print "out=%s\nerr=%s\n" %(out,err)
@@ -171,7 +172,7 @@ def jsonPost():
 
 if __name__ == "__main__":
   if len(sys.argv)>1:
-    rootPath=sys.argv[1] 
+    rootPath=sys.argv[1]
 
   print bottle.TEMPLATE_PATH
   bottle.TEMPLATE_PATH.append(rootPath + "/views")
@@ -182,5 +183,5 @@ if __name__ == "__main__":
   #if is_child():
   #  thread = Thread(target=wifi_update_thread)
   #  thread.start()
-  
+
   run(host='0.0.0.0', port=80, reloader=True)
